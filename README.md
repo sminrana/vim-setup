@@ -1,3 +1,3 @@
-# I have been using this settings for my Vim, I also have MacVim installed.
+# My .vimrc file
 
-Screenshot ![](https://d.pr/i/wHSPZW)
+[Screenshot](https://d.pr/i/wHSPZW)
