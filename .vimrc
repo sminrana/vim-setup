@@ -17,6 +17,13 @@ set autoread                    "Reload files changed outside vim
 set splitright
 set hidden
 syntax on
+set path+=$PWD
+set path+=~/Projects
+set wildmenu
+set wildmode=list:full
+set wildignorecase
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+
 
 let mapleader=","
 
@@ -45,7 +52,7 @@ set nowrap       "Wrap lines
 set linebreak    "Wrap lines at convenient points
 
 set colorcolumn=120
-highlight ColorColumn cetermbg=0 guibg=lightgray
+" highlight ColorColumn cetermbg=0 guibg=lightgray
 
 " set spell spelllang=en_us
 " set list listchars=tab:\ \ ,trail:Â·
@@ -83,7 +90,6 @@ set ma
 
 
 
-
 " ========================================
 " Vim plugin & bundle
 " ========================================
@@ -94,7 +100,6 @@ set ma
 " command line with the following syntax:
 " vim --noplugin -u vim/vundles.vim -N "+set hidden" "+syntax on" +BundleClean! 
 
-+BundleInstall +qall
 
 " Filetype off is required by vundle
 
@@ -104,38 +109,24 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-
-" let Vundle manage Vundle (required)
-Bundle "gmarik/vundle"
 Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/syntastic'
-Bundle "tomtom/tcomment_vim.git"
-Bundle "vim-scripts/TagHighlight.git"
-
-" TODO: Figure out how to do indents intelligently
-" Bundle "austintaylor/vim-indentobject"
 Bundle 'kchmck/vim-coffee-script'
 Plugin 'neoclide/coc.nvim'
 Plugin 'scrooloose/nerdcommenter'
-
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
-
 Plugin 'keith/swift.vim'
-Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'yggdroot/indentline'
 Plugin 'ap/vim-css-color'
-
 Plugin 'luochen1990/rainbow'
-Plugin 'tpope/vim-surround'
 Plugin 'thaerkh/vim-workspace'
 Plugin 'kshenoy/vim-signature'
 Plugin 'janko-m/vim-test'
 Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 Plugin 'junegunn/fzf'
-Plugin 'tpope/vim-commentary'
+Plugin 'terryma/vim-multiple-cursors'
+
 
 
 call vundle#end()            " required
@@ -146,22 +137,6 @@ filetype plugin indent on     " required!
 " ========================================
 " 3rd party configuration
 " ========================================
-
-" Open up a bash shell quickly in the current window
-map <Leader>s <esc>:ConqueTermSplit bash<cr>
-
-
-" let g:UltiSnipsExpandTrigger="<C-tab>"
-
-" ===== SYNTASTIC
-"mark syntax errors with :signs
-let g:syntastic_enable_signs=1
-"automatically jump to the error when saving the file
-let g:syntastic_auto_jump=0
-"show the error list automatically
-let g:syntastic_auto_loc_list=1
-"don't care about warnings
-let g:syntastic_quiet_warnings={'level':'warnings'}
 
 
 " ====== Make tabs be addressable via Apple+1 or 2 or 3, etc
@@ -185,15 +160,6 @@ let g:workspace_create_new_tabs = 0
 let g:workspace_autosave_always = 2
 
 nnoremap <F7> :ToggleWorkspace<CR>
-
-
-
-set rtp+=/usr/local/opt/fzf
-
-
-
-
-
 
 
 
@@ -230,61 +196,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <S-TAB> <Plug>(coc-range-select-backword)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
 " Using CocList
 " Show all diagnostics
 nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
@@ -313,13 +224,19 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " More General Configuration
 " ========================================
 syntax enable
-" set background=light
-
-" colorscheme monokai
 
 set background=light
 colorscheme solarized
-
 set macligatures
 set guifont=Fira\ Code:h15
 set guitablabel=\[%N\]\ %t\ %M 
+
+let g:netrw_altv=1
+let g:netrw_preview=1
+
+set rtp+=/usr/local/opt/fzf
+
+nnoremap <silent> <leader>f :FZF<cr>
+nnoremap <silent> <leader>F :FZF ~<cr>
+
+let g:rainbow_active = 1
