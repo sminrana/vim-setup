@@ -4,37 +4,60 @@
 
 set nocompatible
 
+" ======== jk as ESC and SPACE as leader
+inoremap jk <esc>
+let mapleader=" "
+
 set encoding=utf-8
-set number                      "Line numbers are good
+set number                      
 set relativenumber
-set backspace=indent,eol,start  "Allow backspace in insert mode
-set history=1000                "Store lots of :cmdline history
-set showcmd                     "Show incomplete cmds down the bottom
-set showmode                    "Show current mode down the bottom
-set gcr=a:blinkon0              "Disable cursor blink
-set visualbell                  "No sounds
-set autoread                    "Reload files changed outside vim
+set backspace=indent,eol,start  
+set history=1000                
+set showcmd                     
+set showmode                    
+set showmatch
+set visualbell                  
+set autoread                    
 set splitright
 set hidden
 syntax on
+
 set path+=$PWD
 set path+=~/Projects
+
 set wildmenu
 set wildmode=list:full
 set wildignorecase
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*.o,*.obj,*~ "stuff to ignore when tab completing
+set wildignore+=*vim/backup*
+set wildignore+=*sass-cache*
+set wildignore+=*DS_Store*
+set wildignore+=vendor/rails/**
+set wildignore+=vendor/cache/**
+set wildignore+=vendor/**
+set wildignore+=*.gem
+set wildignore+=*.git
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
+
+set diffopt-=internal
+set diffopt+=iwhite
+set diffexpr=""
 
 
-let mapleader=","
+set patchmode=.orig
+set backup
+set backupext=.bak
+set backupdir^=~/.vim/backup
 
-set noswapfile
-set nobackup
-set nowb
+" swap directory
+set directory^=~/.vim/swap//
 
-silent !mkdir ~/.vim/backups > /dev/null 2>&1
-set undodir=~/.vim/backups
 set undofile
+set undodir^=~/.vim/undo
 
+set nowb
 
 set autoindent
 set smartindent
@@ -57,18 +80,6 @@ set colorcolumn=120
 " set spell spelllang=en_us
 " set list listchars=tab:\ \ ,trail:Â·
 
-set wildmode=list:longest
-set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
-set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
-set wildignore+=*vim/backups*
-set wildignore+=*sass-cache*
-set wildignore+=*DS_Store*
-set wildignore+=vendor/rails/**
-set wildignore+=vendor/cache/**
-set wildignore+=*.gem
-set wildignore+=log/**
-set wildignore+=tmp/**
-set wildignore+=*.png,*.jpg,*.gif
 
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
@@ -81,8 +92,8 @@ set sidescroll=1
 " Do not indent it while I'm pasting something from outside.
 " set pastetoggle=<F3>
 
-" set clipboard=unnamedplus
-" set paste
+set clipboard+=unnamed
+set paste
 set ma
 
 
@@ -110,21 +121,19 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Bundle 'tpope/vim-fugitive'
-Bundle 'kchmck/vim-coffee-script'
 Plugin 'neoclide/coc.nvim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'keith/swift.vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'yggdroot/indentline'
 Plugin 'ap/vim-css-color'
 Plugin 'luochen1990/rainbow'
-Plugin 'thaerkh/vim-workspace'
 Plugin 'kshenoy/vim-signature'
 Plugin 'janko-m/vim-test'
 Plugin 'SirVer/ultisnips'
 Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 Plugin 'terryma/vim-multiple-cursors'
 
 
@@ -138,28 +147,6 @@ filetype plugin indent on     " required!
 " 3rd party configuration
 " ========================================
 
-
-" ====== Make tabs be addressable via Apple+1 or 2 or 3, etc
-" Use numbers to pick the tab you want (like iTerm)
-map <silent> <D-1> :tabn 1<cr>
-map <silent> <D-2> :tabn 2<cr>
-map <silent> <D-3> :tabn 3<cr>
-map <silent> <D-4> :tabn 4<cr>
-map <silent> <D-5> :tabn 5<cr>
-map <silent> <D-6> :tabn 6<cr>
-map <silent> <D-7> :tabn 7<cr>
-map <silent> <D-8> :tabn 8<cr>
-map <silent> <D-9> :tabn 9<cr>
-
-
-
-" =================== Workspace =================
-" let g:workspace_session_name = 'Session.vim'
-" let g:workspace_session_directory = $HOME . '/.vim/sessions/'
-let g:workspace_create_new_tabs = 0
-let g:workspace_autosave_always = 2
-
-nnoremap <F7> :ToggleWorkspace<CR>
 
 
 
@@ -196,28 +183,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-
-
-
-
 
 
 " ========================================
@@ -236,7 +201,41 @@ let g:netrw_preview=1
 
 set rtp+=/usr/local/opt/fzf
 
-nnoremap <silent> <leader>f :FZF<cr>
-nnoremap <silent> <leader>F :FZF ~<cr>
 
 let g:rainbow_active = 1
+
+
+" ========================================
+" Keybinding, leader is SPACE
+" ========================================
+
+" :map       Normal, Visual and Operator-pending
+" :vmap      Visual
+" :nmap      Normal
+" :omap      Operator-pending (Eg: dw where d is operator character and w is motion character)
+" :map!      Insert and Command-line
+" :imap      Insert
+" :cmap      Command-line
+
+" Make tabs be addressable via Apple+1 or 2 or 3, etc
+map <silent> <D-1> :tabn 1<cr>
+map <silent> <D-2> :tabn 2<cr>
+map <silent> <D-3> :tabn 3<cr>
+map <silent> <D-4> :tabn 4<cr>
+map <silent> <D-5> :tabn 5<cr>
+map <silent> <D-6> :tabn 6<cr>
+map <silent> <D-7> :tabn 7<cr>
+map <silent> <D-8> :tabn 8<cr>
+map <silent> <D-9> :tabn 9<cr>
+
+" <Esc><Esc>
+
+nnoremap <leader>f :Files!<CR>
+nnoremap <leader>l :BLines!<CR>
+nnoremap <leader>g :BCommits!<CR>
+nnoremap <leader>e :Explore<CR>
+
+nnoremap <leader>r :%s///g<Left><Left><Left>
+nnoremap <leader>vg :vimgrep //g ./*.php<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+nnoremap <leader>cf :cfdo %s///gc<Left><Left><Left><Left>
+nnoremap <leader>cfu :cfdo update<CR>
