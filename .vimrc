@@ -46,10 +46,10 @@ set diffopt+=iwhite
 set diffexpr=""
 
 
-set patchmode=.orig
 set backup
 set backupext=.bak
 set backupdir^=~/.vim/backup
+set patchmode=.orig
 
 " swap directory
 set directory^=~/.vim/swap//
@@ -70,6 +70,7 @@ set cindent
 set hlsearch
 " set incsearch
 set textwidth=120
+set ruler
 set wrapmargin=2
 set nowrap       "Wrap lines
 set linebreak    "Wrap lines at convenient points
@@ -96,15 +97,14 @@ set clipboard+=unnamed
 set paste
 set ma
 
-
-
-
+set autowriteall
 
 
 " ========================================
 " Vim plugin & bundle
 " ========================================
-"
+
+
 " This file contains the list of plugin installed using vundle plugin manager.
 " Once you've updated the list of plugin, you can run vundle update by issuing
 " the command :BundleInstall from within vim or directly invoking it from the
@@ -120,7 +120,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 Plugin 'neoclide/coc.nvim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-airline/vim-airline'
@@ -131,11 +131,12 @@ Plugin 'ap/vim-css-color'
 Plugin 'luochen1990/rainbow'
 Plugin 'kshenoy/vim-signature'
 Plugin 'janko-m/vim-test'
-Plugin 'SirVer/ultisnips'
+Plugin 'sirver/ultisnips'
+Plugin 'honza/vim-snippets'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'terryma/vim-multiple-cursors'
-
+Plugin 'scrooloose/syntastic'
 
 
 call vundle#end()            " required
@@ -143,14 +144,9 @@ call vundle#end()            " required
 filetype plugin indent on     " required!
 
 
-" ========================================
-" 3rd party configuration
-" ========================================
-
-
-
-
-" ============================= COC ===========================
+" ============================================
+" Plugin specific configuration from plugin
+" ============================================
 
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -188,12 +184,18 @@ nmap <silent> gr <Plug>(coc-references)
 " ========================================
 " More General Configuration
 " ========================================
+
 syntax enable
 
-set background=light
+" set background=dark    " Setting dark mode
+set background=light   " Setting light mode
+
 colorscheme solarized
+
+
 set macligatures
 set guifont=Fira\ Code:h15
+
 set guitablabel=\[%N\]\ %t\ %M 
 
 let g:netrw_altv=1
@@ -203,6 +205,17 @@ set rtp+=/usr/local/opt/fzf
 
 
 let g:rainbow_active = 1
+
+
+" Retain code folding on file
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview
+
+
+" Auto NORMAL MODE
+au CursorHoldI * stopinsert
+au InsertEnter * let updaterestore=&updatetime | set updatetime=5000
+au InsertLeave * let &updatetime=updaterestore
 
 
 " ========================================
@@ -239,3 +252,7 @@ nnoremap <leader>r :%s///g<Left><Left><Left>
 nnoremap <leader>vg :vimgrep //g ./*.php<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 nnoremap <leader>cf :cfdo %s///gc<Left><Left><Left><Left>
 nnoremap <leader>cfu :cfdo update<CR>
+nnoremap <leader>ind =i{<CR>
+
+" New line
+nnoremap <Leader>nl o<Esc><CR>
