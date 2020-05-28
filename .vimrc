@@ -4,7 +4,7 @@
 
 set nocompatible
 
-" ======== jk as ESC and SPACE as leader
+" ======== jk as Esc andSPACE as leader
 inoremap jk <esc>
 let mapleader=" "
 
@@ -21,7 +21,9 @@ set autoread
 set splitright
 set hidden
 syntax on
-
+set autochdir
+set shortmess+=c
+set updatetime=300
 set path+=$PWD
 set path+=~/Projects
 
@@ -46,16 +48,19 @@ set diffopt+=iwhite
 set diffexpr=""
 
 
+" set nobackup
+" set writebackup " Enabled!
 set backup
 set backupext=.bak
-set backupdir^=~/.vim/backup
+set backupdir^=~/.vim/backup//
 set patchmode=.orig
 
 " swap directory
 set directory^=~/.vim/swap//
 
 set undofile
-set undodir^=~/.vim/undo
+set undodir^=~/.vim/undo//
+
 
 set nowb
 
@@ -78,26 +83,33 @@ set linebreak    "Wrap lines at convenient points
 set colorcolumn=120
 " highlight ColorColumn cetermbg=0 guibg=lightgray
 
-" set spell spelllang=en_us
+set spell spelllang=en_us
 " set list listchars=tab:\ \ ,trail:Â·
 
 
-set scrolloff=8         "Start scrolling when we're 8 lines away from margins
-set sidescrolloff=15
+set scrolloff=5
+set sidescrolloff=1
 set sidescroll=1
 
 
 " Enable mouse
-" set mouse=r
-
-" Do not indent it while I'm pasting something from outside.
-" set pastetoggle=<F3>
-
+set mouse+=a
 set clipboard+=unnamed
 set paste
 set ma
-
 set autowriteall
+
+" set t_Co=256
+" set cursorline
+set lazyredraw
+set ttyfast
+set synmaxcol=150
+" set foldmethod=manual 
+" set foldmethod=indent
+set regexpengine=1
+
+
+
 
 
 " ========================================
@@ -109,7 +121,7 @@ set autowriteall
 " Once you've updated the list of plugin, you can run vundle update by issuing
 " the command :BundleInstall from within vim or directly invoking it from the
 " command line with the following syntax:
-" vim --noplugin -u vim/vundles.vim -N "+set hidden" "+syntax on" +BundleClean! 
+" vim --noplugin -u vim/vundles.vim -N "+set hidden" "+syntax on" +BundleClean!
 
 
 " Filetype off is required by vundle
@@ -137,11 +149,19 @@ Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-surround'
+Plugin 'morhetz/gruvbox'
+Plugin 'thaerkh/vim-workspace'
+
 
 
 call vundle#end()            " required
 
 filetype plugin indent on     " required!
+
+
+
+
 
 
 " ============================================
@@ -181,30 +201,46 @@ nmap <silent> gr <Plug>(coc-references)
 
 
 
+
+let g:workspace_create_new_tabs = 1
+nnoremap <leader>s :ToggleWorkspace<CR>
+let g:workspace_session_name = 'session.vim'
+let g:workspace_session_directory = $HOME . '/.vim/sessions/'
+let g:workspace_autosave_always = 1
+
+
+
+
 " ========================================
-" More General Configuration
+" More General Configuration UI
 " ========================================
 
 syntax enable
-
-" set background=dark    " Setting dark mode
-set background=light   " Setting light mode
-
-colorscheme solarized
-
-
+set background=dark
+colorscheme gruvbox
 set macligatures
-set guifont=Fira\ Code:h15
+set guifont=Fira\ Code:h14
+set guitablabel=\[%N\]\ %t\ %M
+" set termguicolors
+" set guicursor+=n:ver1
 
-set guitablabel=\[%N\]\ %t\ %M 
-
-let g:netrw_altv=1
 let g:netrw_preview=1
+let g:netrw_banner = 1
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+
 
 set rtp+=/usr/local/opt/fzf
 
-
 let g:rainbow_active = 1
+
+
+" Vim-better-whitespace always automatically remove
+" let g:strip_whitespace_on_save=1
+" Do not confirm
+" let g:strip_whitespace_confirm=0
 
 
 " Retain code folding on file
@@ -214,8 +250,12 @@ autocmd BufWinEnter *.* silent loadview
 
 " Auto NORMAL MODE
 au CursorHoldI * stopinsert
-au InsertEnter * let updaterestore=&updatetime | set updatetime=5000
+au InsertEnter * let updaterestore=&updatetime | set updatetime=25000
 au InsertLeave * let &updatetime=updaterestore
+
+" Auto normal mode when tab changes
+autocmd TabEnter * stopinsert
+
 
 
 " ========================================
@@ -241,18 +281,28 @@ map <silent> <D-7> :tabn 7<cr>
 map <silent> <D-8> :tabn 8<cr>
 map <silent> <D-9> :tabn 9<cr>
 
-" <Esc><Esc>
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
 
 nnoremap <leader>f :Files!<CR>
-nnoremap <leader>l :BLines!<CR>
-nnoremap <leader>g :BCommits!<CR>
-nnoremap <leader>e :Explore<CR>
+nnoremap <leader>bl :BLines!<CR>
+nnoremap <leader>bc :BCommits!<CR>
+nnoremap <leader>l :Lines<CR>
+nnoremap <leader>e :Vexplore<CR>
+nnoremap <leader>c :Commands<cr>
+noremap  <leader>w :Windows<cr>
+nnoremap <leader>b :Buffers<cr>
+nnoremap <leader>h :History<cr>
+nnoremap <leader>rg :Rg!<Right>
+nnoremap <leader>t :Tags<cr>
 
 nnoremap <leader>r :%s///g<Left><Left><Left>
 nnoremap <leader>vg :vimgrep //g ./*.php<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 nnoremap <leader>cf :cfdo %s///gc<Left><Left><Left><Left>
 nnoremap <leader>cfu :cfdo update<CR>
-nnoremap <leader>ind =i{<CR>
-
-" New line
-nnoremap <Leader>nl o<Esc><CR>
+nnoremap <leader>ind =i{<CR> " Indentation
+nnoremap <Leader>nl o<Esc><CR> " New line
