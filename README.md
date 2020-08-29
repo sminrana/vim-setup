@@ -2,4 +2,4 @@
 
 [Screenshot](https://d.pr/i/wHSPZW)
 
-# Added cpanel deployment file
+# Added cpanel deployment file updated
